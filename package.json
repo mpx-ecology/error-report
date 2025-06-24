@@ -1,0 +1,25 @@
+{
+  "name": "@mpxjs/error-report",
+  "version": "1.0.0",
+  "description": "error and warn visualization tools during the webpack compilation process",
+  "main": "lib/plugin.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mpx-ecology/error-report.git"
+  },
+  "author": "wangxiaokou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mpx-ecology/error-report/issues"
+  },
+  "homepage": "https://github.com/mpx-ecology/error-report#readme",
+  "dependencies": {
+    "open": "^10.1.2"
+  }
+}

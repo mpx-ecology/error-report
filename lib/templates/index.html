@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编译结果分析</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>编译结果分析</h1>
+            </div>
+            <div class="header-right">
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalErrors">0</div>
+                        <div class="stat-label">总错误</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="criticalErrors">0</div>
+                        <div class="stat-label">严重错误</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="warnings">0</div>
+                        <div class="stat-label">警告</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="sub-header">
+            <div class="tabs">
+                <button class="tab-button active" data-tab="errors">错误</button>
+                <button class="tab-button" data-tab="warnings">警告</button>
+            </div>
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="搜索文件路径或错误内容...">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="lastUpdate" class="last-update">最后更新: 加载中...</div>
+            <div id="groupTabs" class="group-tabs">
+                <!-- 分组标签将通过 JavaScript 动态添加 -->
+            </div>
+            <div class="modules-container">
+                <div id="errorList" class="error-list">
+                    <div class="loading">加载错误报告...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <template id="error-template">
+        <div class="error-section module">
+            <div class="module-header">
+                <h3 class="module-title">
+                    <i class="fas fa-folder"></i>
+                    <span class="module-name"></span>
+                    <span class="error-count"></span>
+                </h3>
+            </div>
+            <div class="error-items"></div>
+        </div>
+    </template>
+
+    <template id="error-item-template">
+        <div class="error-item">
+            <div class="error-header">
+                <div class="error-title">
+                    <span class="error-severity"></span>
+                    <span class="error-message"></span>
+                </div>
+                <div class="error-location">
+                    <strong>报错路径：</strong>
+                    <div class="file-path-container">
+                        <div class="file-path collapsible"></div>
+                        <button class="toggle-path">
+                            <span class="expand-text">展开</span>
+                            <span class="collapse-text">收起</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="error-details">
+                <div class="error-content"></div>
+                <div class="stack-trace-container">
+                    <button class="stack-toggle">
+                        <i class="fas fa-chevron-down"></i>
+                        显示堆栈
+                    </button>
+                    <div class="stack-trace"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+    
+    <script src="main.js"></script>
+    <button id="backToTop" class="back-to-top" title="返回顶部">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+</body>
+</html>
