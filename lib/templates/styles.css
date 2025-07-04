@@ -716,6 +716,52 @@ h1 {
     background: rgba(255, 255, 255, 0.2);
 }
 
+/* 文件路径视图切换按钮样式 */
+.file-view-switch {
+    margin-bottom: 16px;
+    padding: 0 4px;
+}
+
+.file-view-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.file-view-tab {
+    padding: 6px 16px;
+    border: none;
+    border-radius: 20px;
+    background: var(--bg-gray);
+    color: var(--text-color);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.file-view-tab:hover {
+    background: #e6e6e6;
+}
+
+.file-view-tab.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.file-view-tab .count {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.file-view-tab.active .count {
+    background: rgba(255, 255, 255, 0.2);
+}
+
 /* 响应式布局 */
 @media (max-width: 768px) {
   header {
@@ -792,5 +838,46 @@ h1 {
 }
 
 .error-all-message strong {
+  color: var(--primary-color);
+}
+
+.file-path-item {
+  display: flex;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.file-full-path {
+  font-family: Menlo, Monaco, Consolas, monospace;
+  color: var(--text-color);
+  font-size: 12px;
+  line-height: 1.2;
+  flex: 1
+}
+
+.file-path-item .copy-path-btn {
+  border: 1px solid #f5f5f5;
+  padding: 2px 4px;
+  border-radius: 5px;
+  color: #999;
+}
+
+.file-path-item .copy-path-btn:hover {
+  color: var(--primary-color);
+}
+
+.hint {
+  font-size: 14px;
+  color: var(--error-color);
+  font-weight: bold;
+}
+.document {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+.document:hover {
+  text-decoration: underline;
+}
+.document:active {
   color: var(--primary-color);
 }

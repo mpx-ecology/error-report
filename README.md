@@ -152,35 +152,13 @@ new ErrorReport({
 3. 支持功能：
    - 错误分类查看
    - 错误详情展示
-   - 源码定位
-   - 解决方案推荐
 
-## 调试
-
-设置环境变量开启调试模式：
-
-```bash
-# Mac/Linux
-export DEBUG=true
-
-# Windows
-set DEBUG=true
-```
 
 ## 常见问题
 
-1. 如何自定义服务端口？
-2. 如何处理特定类型错误？
-3. 如何配置错误阻断规则？
-
-详见 [FAQ文档](./docs/FAQ.md)
 
 ## 贡献指南
 
-1. Fork 项目
-2. 创建功能分支
-3. 提交变更
-4. 发起 Pull Request
 
 ## 许可证
 
