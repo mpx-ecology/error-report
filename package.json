@@ -1,6 +1,6 @@
 {
   "name": "@mpxjs/error-report",
-  "version": "1.0.1-5",
+  "version": "1.0.1-6",
   "description": "error and warn visualization tools during the webpack compilation process",
   "main": "lib/plugin.js",
   "directories": {
