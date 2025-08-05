@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错误分析工具 - SPA版本</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* SPA基础样式 */
+        .spa-container {
+            min-height: 100vh;
+        }
+
+        .spa-page {
+            display: none;
+        }
+
+        .spa-page.active {
+            display: block;
+        }
+
+        /* 导航栏样式 */
+        .spa-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .spa-nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .spa-nav-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .spa-nav-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .spa-nav-link {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .spa-nav-link:hover {
+            color: white;
+        }
+
+        .spa-nav-separator {
+            opacity: 0.6;
+        }
+
+        /* 页面主体样式 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        /* 头部样式 */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-item .label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 控制面板 */
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        /* 搜索框 */
+        .search-section {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* 标签页 */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            border: none;
+            background: #f8f9fa;
+            color: #666;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab-button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        /* 分组标签 */
+        .group-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .group-tab {
+            padding: 8px 16px;
+            border: 2px solid #e9ecef;
+            background: white;
+            color: #666;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .group-tab.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .group-tab .count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        /* 过滤器 */
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-button {
+            padding: 8px 16px;
+            border: 2px solid #e9ecef;
+            background: white;
+            color: #666;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+        }
+
+        .filter-button.active {
+            border-color: #28a745;
+            background: #28a745;
+            color: white;
+        }
+
+        /* 错误列表 */
+        .error-list {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .error-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f1f3f4;
+            transition: background-color 0.2s ease;
+        }
+
+        .error-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .error-item:last-child {
+            border-bottom: none;
+        }
+
+        .error-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .error-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .error-icon.error {
+            background: #dc3545;
+            color: white;
+        }
+
+        .error-icon.warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .error-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .error-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+
+        .error-file {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .error-details {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.4;
+        }
+
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* 返回顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-to-top:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .stats {
+                gap: 15px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .group-tabs {
+                gap: 8px;
+            }
+
+            .filters {
+                gap: 8px;
+            }
+
+            .error-header {
+                gap: 10px;
+            }
+
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="spa-container">
+        <!-- SPA导航栏 -->
+        <nav class="spa-nav">
+            <div class="spa-nav-content">
+                <div class="spa-nav-title">🔍 错误分析工具</div>
+                <div class="spa-nav-breadcrumb" id="spaBreadcrumb">
+                    <span class="spa-nav-link" onclick="SPA.navigateTo('main')">首页</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主页面 -->
+        <div class="spa-page active" id="spa-page-main">
+            <!-- 头部 -->
+            <header class="header">
+                <div class="header-content">
+                    <h1>🔍 高级错误列表</h1>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="value" id="totalErrors">0</span>
+                            <span class="label">错误</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="value" id="warnings">0</span>
+                            <span class="label">警告</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="value" id="lastUpdate">--</span>
+                            <span class="label">最后更新</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 主容器 -->
+            <div class="container">
+                <!-- 控制面板 -->
+                <div class="controls">
+                    <!-- 搜索框 -->
+                    <div class="search-section">
+                        <input type="text" 
+                               id="searchInput" 
+                               class="search-input" 
+                               placeholder="🔍 搜索错误信息、文件路径或错误类型...">
+                    </div>
+
+                    <!-- 视图切换标签 -->
+                    <div class="tabs">
+                        <button class="tab-button active" data-view="modules">按模块分组</button>
+                        <button class="tab-button" data-view="files">按文件分组</button>
+                    </div>
+
+                    <!-- 分组标签 -->
+                    <div class="group-tabs" id="groupTabs">
+                        <!-- 动态生成的分组标签将显示在这里 -->
+                    </div>
+
+                    <!-- 过滤器 -->
+                    <div class="filters">
+                        <button class="filter-button active" data-filter="errors">🔴 错误</button>
+                        <button class="filter-button active" data-filter="warnings">🟡 警告</button>
+                    </div>
+                </div>
+
+                <!-- 错误列表 -->
+                <div class="error-list">
+                    <div id="errorList">
+                        <!-- 加载状态 -->
+                        <div class="loading">
+                            <span class="loading-spinner"></span>
+                            正在加载错误数据...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 错误详情页面 -->
+        <div class="spa-page" id="spa-page-error-detail">
+            <div class="container">
+                <div id="errorDetailContent">
+                    <!-- 错误详情内容将在这里动态加载 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 文件详情页面 -->
+        <div class="spa-page" id="spa-page-file-detail">
+            <div class="container">
+                <div id="fileDetailContent">
+                    <!-- 文件详情内容将在这里动态加载 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" id="backToTop">
+        ↑
+    </button>
+
+    <!-- 错误项模板 -->
+    <template id="error-item-template">
+        <div class="error-item">
+            <div class="error-header">
+                <div class="error-icon">!</div>
+                <div class="error-content">
+                    <div class="error-title"></div>
+                    <div class="error-file"></div>
+                    <div class="error-details"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- 文件路径项模板 -->
+    <template id="file-path-item-template">
+        <div class="error-item">
+            <div class="error-header">
+                <div class="error-icon">📁</div>
+                <div class="error-content">
+                    <div class="error-title"></div>
+                    <div class="error-details"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- 引入JS文件 -->
+    <script src="spa-main.js"></script>
+</body>
+</html>

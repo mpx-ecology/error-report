@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错误详情 - 编译结果分析</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <button class="back-button" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                    返回
+                </button>
+                <h1>错误详情</h1>
+            </div>
+            <div class="header-right">
+                <div class="error-type-badge">
+                    <span id="errorType">未知错误</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="error-detail-container">
+                <!-- 错误基本信息 -->
+                <div class="error-basic-info">
+                    <h2>基本信息</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>错误类型：</label>
+                            <span id="errorTypeDetail">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>分组：</label>
+                            <span id="errorGroup">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>严重程度：</label>
+                            <span id="errorSeverityDetail" class="severity-badge">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>发生时间：</label>
+                            <span id="errorTimeDetail">-</span>
+                        </div>
+                        <div class="info-item full-width">
+                            <label>报错文件：</label>
+                            <span id="filePath" class="file-path-link">-</span>
+                        </div>
+                        <div class="info-item full-width" id="errorLocationSection">
+                            <label>错误位置：</label>
+                            <span id="errorLocation">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 错误消息 -->
+                <div class="error-message-section">
+                    <h2>错误信息</h2>
+                    <div class="error-message-content">
+                        <pre id="errorMessage">加载中...</pre>
+                    </div>
+                </div>
+
+                <!-- 完整错误信息 -->
+                <div class="error-full-message-section" id="fullErrorSection">
+                    <h2>完整错误信息</h2>
+                    <div class="error-full-message-content">
+                        <pre id="fullError">加载中...</pre>
+                    </div>
+                </div>
+
+                <!-- 堆栈信息 -->
+                <div class="stack-trace-section" id="stackTraceSection">
+                    <h2>堆栈信息</h2>
+                    <div class="stack-trace-container">
+                        <div class="stack-trace">
+                            <pre id="stackTrace">加载中...</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 相关文件 -->
+                <div class="related-files-section" id="relatedFilesSection">
+                    <h2>相关文件</h2>
+                    <div id="relatedFiles" class="related-files-list">
+                        <div class="loading">加载中...</div>
+                    </div>
+                </div>
+
+                <!-- 原始数据 -->
+                <div class="raw-data-section">
+                    <h2>原始数据</h2>
+                    <div class="raw-data-content">
+                        <pre id="rawErrorData">加载中...</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="backToTop" class="back-to-top" title="返回顶部">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="error-detail.js"></script>
+</body>
+</html>

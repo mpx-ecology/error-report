@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错误详情索引测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+        .debug-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.warning { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <h1>🔧 错误详情索引测试工具</h1>
+    
+    <div class="test-section">
+        <h3>📊 当前状态</h3>
+        <div id="statusInfo" class="debug-info">检查中...</div>
+        <button class="test-btn" onclick="checkStatus()">🔄 刷新状态</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>🧪 测试错误详情页面</h3>
+        <p>点击按钮测试不同类型的错误详情：</p>
+        
+        <div>
+            <button class="test-btn" onclick="testSyntaxError()">🐛 语法错误 (syntax[0])</button>
+            <button class="test-btn" onclick="testUnusedWarning()">⚠️ 未使用警告 (unused[0])</button>
+            <button class="test-btn" onclick="testCompleteError()">📋 完整错误 (complete-test[0])</button>
+        </div>
+        
+        <div style="margin-top: 15px;">
+            <button class="test-btn" onclick="testInvalidError()" style="background: #dc3545;">❌ 测试无效索引</button>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🔗 直接链接测试</h3>
+        <p>也可以直接访问这些链接：</p>
+        <div class="debug-info">
+error-detail.html?type=error&index=0&group=syntax&debug=true
+error-detail.html?type=warning&index=0&group=unused&debug=true
+error-detail.html?type=error&index=0&group=complete-test&debug=true
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>📋 测试数据结构</h3>
+        <div id="dataStructure" class="debug-info">加载中...</div>
+    </div>
+
+    <script>
+        // 模拟错误报告数据 (与 error-detail.js 中的数据保持一致)
+        const mockErrorReport = {
+            errors: {
+                syntax: [
+                    {
+                        message: 'Unexpected token \';\' at line 25',
+                        description: '语法错误：在第25行发现意外的分号',
+                        filePath: 'src/components/Header.js',
+                        line: 25,
+                        column: 18,
+                        severity: 'error'
+                    }
+                ],
+                'complete-test': [
+                    {
+                        message: '这是一个包含所有可能属性的完整错误示例',
+                        description: '完整错误描述，包含详细的错误信息和上下文',
+                        filePath: 'src/test/complete.js',
+                        line: 42,
+                        column: 15,
+                        severity: 'critical'
+                    }
+                ]
+            },
+            warnings: {
+                unused: [
+                    {
+                        message: 'Unused variable \'unusedVar\' at line 10',
+                        description: '未使用的变量警告',
+                        filePath: 'src/utils/helpers.js',
+                        line: 10,
+                        column: 7,
+                        severity: 'warning'
+                    }
+                ]
+            }
+        };
+
+        // 全局函数，供错误详情页面调用
+        window.getErrorByIndex = function(type, index, group) {
+            console.log('🔍 getErrorByIndex called:', { type, index, group });
+            
+            const dataSource = type === 'error' ? mockErrorReport.errors : mockErrorReport.warnings;
+            
+            if (!dataSource || !dataSource[group]) {
+                console.log(`❌ No ${type} data found for group: ${group}`);
+                return null;
+            }
+            
+            const errorArray = dataSource[group];
+            if (index < 0 || index >= errorArray.length) {
+                console.log(`❌ Index ${index} out of range for ${type} group ${group} (length: ${errorArray.length})`);
+                return null;
+            }
+            
+            const errorItem = errorArray[index];
+            const enrichedError = {
+                ...errorItem,
+                _type: type,
+                _group: group,
+                _index: index,
+                _id: `${type}-${group}-${index}`,
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('✅ Found error:', enrichedError);
+            return enrichedError;
+        };
+
+        function testSyntaxError() {
+            console.log('🧪 Testing syntax error');
+            const url = 'error-detail.html?type=error&index=0&group=syntax&debug=true';
+            window.open(url, '_blank', 'width=1200,height=800');
+        }
+
+        function testUnusedWarning() {
+            console.log('🧪 Testing unused warning');
+            const url = 'error-detail.html?type=warning&index=0&group=unused&debug=true';
+            window.open(url, '_blank', 'width=1200,height=800');
+        }
+
+        function testCompleteError() {
+            console.log('🧪 Testing complete error');
+            const url = 'error-detail.html?type=error&index=0&group=complete-test&debug=true';
+            window.open(url, '_blank', 'width=1200,height=800');
+        }
+
+        function testInvalidError() {
+            console.log('🧪 Testing invalid error (should show error message)');
+            const url = 'error-detail.html?type=error&index=99&group=nonexistent&debug=true';
+            window.open(url, '_blank', 'width=1200,height=800');
+        }
+
+        function checkStatus() {
+            const statusDiv = document.getElementById('statusInfo');
+            
+            let status = `✅ 测试工具状态检查\n`;
+            status += `⏰ 当前时间: ${new Date().toLocaleString()}\n`;
+            status += `🔧 getErrorByIndex 函数: ${typeof window.getErrorByIndex === 'function' ? '已定义' : '未定义'}\n\n`;
+            
+            // 测试每个数据项
+            const testCases = [
+                { type: 'error', index: 0, group: 'syntax' },
+                { type: 'warning', index: 0, group: 'unused' },
+                { type: 'error', index: 0, group: 'complete-test' }
+            ];
+            
+            status += `📋 数据验证:\n`;
+            testCases.forEach(testCase => {
+                const result = window.getErrorByIndex(testCase.type, testCase.index, testCase.group);
+                const statusIcon = result ? '✅' : '❌';
+                status += `${statusIcon} ${testCase.type}[${testCase.group}][${testCase.index}]: ${result ? result.message.substring(0, 30) + '...' : '无数据'}\n`;
+            });
+            
+            statusDiv.textContent = status;
+        }
+
+        function showDataStructure() {
+            const dataDiv = document.getElementById('dataStructure');
+            dataDiv.textContent = JSON.stringify(mockErrorReport, null, 2);
+        }
+
+        // 页面加载时初始化
+        window.onload = function() {
+            checkStatus();
+            showDataStructure();
+        };
+    </script>
+</body>
+</html>
